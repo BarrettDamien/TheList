@@ -1,0 +1,50 @@
+html, body{
+    height: 100%;
+}
+
+body{
+    background-image: url('/images/doc_marty.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    margin-bottom: 60px;
+    color: rgb(255, 255, 255) !important;
+}
+
+main{
+    text-align: center;
+}
+
+footer {
+    background-color: #343a40;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    color: #6c757d !important;
+}
+
+.login{
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.form-signin{
+    padding: 50px;
+    box-sizing: border-box;
+    background-color: #343a40;
+}
+
+.hero{
+    padding-top: 35%;
+}
+
+.signin{
+    padding-top: 15%;
+}
+
+.btn-custom-width{
+    max-width: 500px;
+}
