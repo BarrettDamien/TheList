@@ -1,5 +1,33 @@
 const { Model, DataTypes } = require('sequelize')
-const sequelize = require('../database')
+
+module.exports = (sequelize) => {
+    class User extends Model {}
+
+    User.init({
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        password: {
+            type: DataTypes.STRING(64),
+            allowNull: false,
+        },
+        salt: {
+            type: DataTypes.STRING(64),
+            allowNull: false
+        }
+    }, {
+        sequelize, 
+        modelName: 'user'
+    })
+
+    return User;
+}
+
+// models/User.js
+/* const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../database');
 
 class User extends Model {}
 
@@ -11,15 +39,15 @@ User.init({
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     salt: {
         type: DataTypes.STRING,
         allowNull: false
     }
 }, {
-    sequelize, 
+    sequelize,
     modelName: 'user'
-})
+});
 
-module.exports = User
+module.exports = User; */

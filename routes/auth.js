@@ -1,8 +1,9 @@
-var express = require('express');
-var crypto = require('crypto');
-var passport = require('passport');
+var express = require('express')
+var crypto = require('crypto')
+var passport = require('passport')
 var LocalStrategy = require('passport-local')
-var User = require('../models/User');
+const sequelize = require('../database')
+const { User } = require('../database')
 
 var router = express.Router();
 
@@ -41,7 +42,7 @@ passport.deserializeUser(function(id,done) {
 })
 
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
+    successRedirect: '/watchlist',
     failureRedirect: '/auth/login?failed=1'
 }))
 
@@ -51,21 +52,28 @@ router.get('/login', (req, res, next) => {
 })
 
 router.post('/signup', (req, res, next) => {
-    let salt = crypto.randomBytes(16);
+    let salt = crypto.randomBytes(16).toString('hex');
     crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', async function(err, hashedPassword) {
         if(err) {
+            console.error("Hashing error:", err);
             res.redirect('/auth/signup?failed=1')
         }
         try {
-            const user = await User.create({username: req.body.username, password: hashedPassword, salt: salt})
+            const user = await User.create({
+                username: req.body.username,
+                password: hashedPassword,
+                salt: salt
+            })
 
             req.login(user, function(err) {
                 if (err) {
+                    console.error("Login error:", err);
                     res.redirect('/auth/signup?failed=3')
                 }
                 res.redirect('/')
             })
         } catch (e) {
+            console.error("Error creating user:", e);
             res.redirect('/auth/signup?failed=2')
         }
     })

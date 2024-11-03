@@ -1,6 +1,8 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const MovieWatchlist = require('../models/MovieWatchlist');
+const TVWatchlist = require('../models/TVWatchlist');
 
 const OMDB_API_KEY = '144a0d98'; 
 
@@ -27,7 +29,22 @@ router.get('/search', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { imdbID, title } = req.body;
+    try {
+        const { userId } = req.user; // Assuming userId is stored in req.user
+        const { movieId } = req.body; // Get movieId from the request body
+
+        // Create a new entry in the MovieWatchlist
+        const newWatchlistEntry = await MovieWatchlist.create({
+            userId: userId,
+            movieId: movieId,
+        });
+
+        res.status(201).json(newWatchlistEntry);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while adding to the watchlist.');
+    }
+    /* const { imdbID, title } = req.body;
 
     if (!imdbID || !title) {
         return res.status(400).send('Missing required fields.');
@@ -40,12 +57,16 @@ router.post('/', async (req, res) => {
     } catch (error) {
         console.error('Error adding movie to watchlist:', error);
         res.status(500).send('An error occurred while adding the movie to the watchlist.');
-    }
+    } */
 });
 
 router.get('/', (req, res) => {
     /* Fetch watchlist function */
-    res.render('watchlist')
+    if(req.user) {
+        res.render('watchlist', { user: req.user  }); // Pass user ID to the template
+    } else {
+        res.redirect('/auth/login');
+    }
 });
 
 // Add to Movie Watchlist

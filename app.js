@@ -1,12 +1,14 @@
 var express = require('express');
 var path = require('path');
-var sequelize = require('./database');
+var { sequelize } = require('./database');
 var session = require('express-session')
 var passport = require('passport');
 
-
-
-sequelize.sync().then(()=> console.log('db is ready'))
+sequelize.sync({ force: true }).then(() => {
+    console.log('Database & tables created!');
+}).catch((error) => {
+    console.error('Error syncing database:', error);
+});
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
