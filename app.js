@@ -4,10 +4,13 @@ var sequelize = require('./database');
 var session = require('express-session')
 var passport = require('passport');
 
+
+
 sequelize.sync().then(()=> console.log('db is ready'))
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var watchlistRouter = require('./routes/watchlist');
 
 var app = express();
 
@@ -24,5 +27,6 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/watchlist', watchlistRouter);
 
 module.exports = app;

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watchlist</title>
+</head>
+<body>
+    <h1>Watchlist</h1>
+    <form id="movie-search-form">
+        <input type="text" id="search-input" placeholder="Search for a movie..." />
+        <button type="submit">Search</button>
+    </form>
+    <div id="search-results">
+        <% if (results && results.length) { %>
+            <ul>
+                <% results.forEach(movie => { %>
+                    <li>
+                        <h3><%= movie.Title %> (<%= movie.Year %>)</h3>
+                        <button onclick="addToWatchlist('<%= movie.imdbID %>', '<%= movie.Title %>')">Add to Watchlist</button>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } else { %>
+            <p>No results found.</p>
+        <% } %>
+    </div>
+
+    <!-- JavaScript for handling search -->
+    <script>
+        document.getElementById('movie-search-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const query = document.getElementById('search-input').value;
+            try {
+                const response = await fetch(`/watchlist/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                const resultsDiv = document.getElementById('search-results');
+                if (response.ok) {
+                    // Display search results
+                    resultsDiv.innerHTML = data.map(movie => `<p>${movie.imdbID} --${movie.Title} -- ${movie.Year} -- ${movie.Runtime} -- ${movie.Genre}</p>`).join('');
+                } else {
+                    // Display error message if no results or error occurs
+                    resultsDiv.innerHTML = `<p>${data.error || 'No results found'}</p>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('search-results').innerHTML = `<p>An error occurred. Please try again.</p>`;
+            }
+        });
+        async function addToWatchlist(imdbID, title) {
+            try {
+                const response = await fetch('/watchlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ imdbID, title }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to add movie to watchlist.');
+                }
+
+                alert('Movie added to your watchlist!');
+                // Optionally, refresh the watchlist or update the UI accordingly
+            } catch (error) {
+                console.error('Error adding to watchlist:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }   
+    </script>
+</body>
+</html>
