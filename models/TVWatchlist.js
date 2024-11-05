@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
                 key: 'id',
             }
         },
-        tvShowId: {
+        showId: {
             type: DataTypes.STRING,
             allowNull: false,
             references: {
@@ -22,7 +22,8 @@ module.exports = (sequelize) => {
         }
     }, {
         sequelize, 
-        modelName: 'tvwatchlist'
+        modelName: 'tv_watchlist',
+        tableName: 'tv_watchlist'
     })
 
     return TVWatchlist;

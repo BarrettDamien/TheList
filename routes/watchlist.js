@@ -1,14 +1,28 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const MovieWatchlist = require('../models/MovieWatchlist');
-const TVWatchlist = require('../models/TVWatchlist');
-
+const { sequelize, User, MovieWatchlist, Movie, TVWatchlist } = require('../models');
 const OMDB_API_KEY = '144a0d98'; 
 
-// Define routes within /watchlist here
+// Main home page login reset page
+router.get('/', (req, res) => {
+    if(req.user) {
+        res.render('watchlist', { user: req.user  }); // Pass user ID to the template
+    } else {
+        res.redirect('/auth/login');
+    }
+});
+
+router.get('/watchlist', (req, res) => {
+    if(req.user) {
+        res.render('watchlist', { user: req.user  }); // Pass user ID to the template
+    } else {
+        res.redirect('/auth/login');
+    }
+});
+
+// Search OMDB via GET API endpoints
 router.get('/search', async (req, res) => {
-    /* Search function */
     const searchQuery = req.query.q;
     
     if (!searchQuery) {
@@ -26,51 +40,69 @@ router.get('/search', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while searching' });
     }
-});
+}); 
 
-router.post('/', async (req, res) => {
-    try {
-        const { userId } = req.user; // Assuming userId is stored in req.user
-        const { movieId } = req.body; // Get movieId from the request body
+// From the GET request, POST request to add to watchlist directly
+router.post('/add-to-watchlist', async (req, res) => {
+    const { imdbID } = req.body
 
-        // Create a new entry in the MovieWatchlist
-        const newWatchlistEntry = await MovieWatchlist.create({
-            userId: userId,
-            movieId: movieId,
-        });
-
-        res.status(201).json(newWatchlistEntry);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('An error occurred while adding to the watchlist.');
-    }
-    /* const { imdbID, title } = req.body;
-
-    if (!imdbID || !title) {
-        return res.status(400).send('Missing required fields.');
+    // Ensure user is logged in safety net
+    if (!req.user) {
+        return res.status(401).json({ error: 'User must be logged in to add to watchlist' });
     }
 
-    try {
-        // Insert movie into the watchlist using the Watchlist model
-        await MovieWatchlist.create({ imdbID, title });
-        res.status(201).send('Movie added to watchlist.');
-    } catch (error) {
-        console.error('Error adding movie to watchlist:', error);
-        res.status(500).send('An error occurred while adding the movie to the watchlist.');
-    } */
-});
+    const userId = req.user.id
 
-router.get('/', (req, res) => {
-    /* Fetch watchlist function */
-    if(req.user) {
-        res.render('watchlist', { user: req.user  }); // Pass user ID to the template
-    } else {
-        res.redirect('/auth/login');
+    //console.log('Incoming data:', { imdbID, userId });
+
+    try {
+        // Fetch movie data from OMDb API based on the imdbID
+        const movieResponse = await axios.get(`http://www.omdbapi.com/?i=${imdbID}&apikey=${OMDB_API_KEY}`);
+
+        if (movieResponse.data.Response === 'True') {
+            const movieData = movieResponse.data;
+
+            // Add movie to your database, ensuring to find or create the record
+            const [movieRecord, created] = await Movie.findOrCreate({
+                where: { imdbID: movieData.imdbID }, // Use imdbID to ensure uniqueness
+                defaults: {
+                    title: movieData.Title,
+                    year: movieData.Year,
+                    genre: movieData.Genre,
+                    runtime: movieData.Runtime,
+                    // Add other fields
+                }
+            });
+
+            console.log('Inserting into MovieWatchlist:', { userId, movieId: movieRecord.id  });
+
+            // Check for existing entry before creating
+            const existingEntry = await MovieWatchlist.findOne({
+                where: { userId: userId, movieId: movieRecord.id  }
+            });
+
+            if (existingEntry) {
+                return res.status(409).json({ error: 'Movie already in watchlist' });
+            }
+
+            // Add the movie to the user's watchlist
+            await MovieWatchlist.create({
+                userId: userId,
+                movieId: movieRecord.id ,
+            });
+
+            return res.status(201).json({ message: '/routes/watchlist.js - Movie added to watchlist', movie: movieRecord });
+        } else {
+            return res.status(404).json({ error: '/routes/watchlist.js - Movie not found' });
+        }
+    } catch (error) {
+        console.error('Error adding to watchlist:', error);
+        return res.status(500).json({ error: '/routes/watchlist.js - 500 error' });
     }
 });
 
 // Add to Movie Watchlist
-router.post('/movie', async (req, res) => {
+/* router.post('/movie', async (req, res) => {
     try {
         const { userId, movieId } = req.body; // Ensure these fields are sent in the request body
         await MovieWatchlist.create({ userId, movieId });
@@ -79,6 +111,8 @@ router.post('/movie', async (req, res) => {
         console.error(error);
         res.status(500).send({ message: 'An error occurred. Please try again.' });
     }
+    console.log('MovieWatchlist:', MovieWatchlist);
+    console.log('Is MovieWatchlist a model?', MovieWatchlist instanceof sequelize.Model); // Should be true
 });
 
 // Add to TV Watchlist
@@ -91,6 +125,8 @@ router.post('/tv', async (req, res) => {
         console.error(error);
         res.status(500).send({ message: 'An error occurred. Please try again.' });
     }
-});
+    console.log('TVWatchlist:', MovieWatchlist);
+    console.log('Is TVWatchlist a model?', MovieWatchlist instanceof sequelize.Model); // Should be true
+}); */
 
 module.exports = router;

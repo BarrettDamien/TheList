@@ -25,7 +25,8 @@ module.exports = (sequelize) => {
         // Add more fields if needed
     }, {
         sequelize, 
-        modelName: 'tvshow'
+        modelName: 'tvshow',
+        tableName: 'tvshow'
     })
 
     return TVShow;

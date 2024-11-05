@@ -17,12 +17,13 @@ module.exports = (sequelize) => {
             allowNull: false,
             references: {
                 model: 'movie', // Reference to Movie model
-                key: 'imdbID',
+                key: 'id',
             }
         }
     }, {
         sequelize, 
-        modelName: 'moviewatchlist'
+        modelName: 'movie_watchlist',
+        tableName: 'movie_watchlist'
     })
 
     return MovieWatchlist;

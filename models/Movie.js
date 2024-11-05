@@ -20,13 +20,14 @@ module.exports = (sequelize) => {
         genre: {
             type: DataTypes.STRING,
         },
-        director: {
+        runtime: {
             type: DataTypes.STRING,
         }
         // Add more fields if needed
     }, {
         sequelize, 
-        modelName: 'movie'
+        modelName: 'movie',
+        tableName: 'movie'
     })
 
     return Movie;

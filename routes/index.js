@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
   if(req.user) {
     res.render('index', { username: req.user.username });
   } else {
-    res.redirect('/auth/login')
+    res.redirect('/auth/signup') // adjusts where unauthed users are pointed to 
   }
 });
 
