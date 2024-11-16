@@ -4,7 +4,7 @@ var { sequelize } = require('./database');
 var session = require('express-session')
 var passport = require('passport');
 
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({  }).then(() => { //add 'force: true' to curly brackets to drop tables when app boots
     console.log('Database & tables created!');
 }).catch((error) => {
     console.error('Error syncing database:', error);
@@ -13,6 +13,9 @@ sequelize.sync({ force: true }).then(() => {
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 var watchlistRouter = require('./routes/watchlist');
+var tvWatchlistRouter = require('./routes/tv_watchlist');
+var movieRandomRouter = require('./routes/movie_randomize');
+var tvRandomRouter = require('./routes/tv_randomize')
 
 var app = express();
 
@@ -30,5 +33,8 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/watchlist', watchlistRouter);
+app.use('/tv-watchlist', tvWatchlistRouter);
+app.use('/randomize', movieRandomRouter);
+app.use('/tv-randomize', tvRandomRouter);
 
 module.exports = app;

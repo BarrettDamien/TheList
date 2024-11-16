@@ -8,6 +8,7 @@
 </head>
 <body>
     <h2>Your Watchlist</h2>
+    <a href="/randomize" >Randomizer</a>
 
     <% if (user) { %>
         <p>Welcome, <%= user.username %>!</p>
@@ -19,116 +20,22 @@
     <% } else { %>
         <p>Please log in to see your watchlist.</p>
     <% } %>
-    <!--Start of v2 search-->
-    <h3>V2 Search for Movies</h3>
-    <input type="text" id="movie-search-input2" placeholder="Enter movie title">
-    <button id="movie-search-button2">Search</button>
+
+    <h3>Search for Movies</h3>
+    <input type="text" id="movie-search-input" placeholder="Enter movie title">
+    <button id="movie-search-button">Search</button>
     
-    <div id="movie-search-results2"></div>
-    <!-- End of v2 -->
-    <h1>SPLITTER</h1>
+    <div id="movie-search-results"></div>
 
-    <!-- Search Field for OMDb API (v1) -->
-    <!-- <h3>V1 Search for Movies/TV Shows</h3>
-    <input type="text" id="movie-search-input" placeholder="Search for a movie..." />
-    <button id="movie-search-button">Search</button> 
+    <h3>Search for TV Shows</h3>
+    <input type="text" id="tv-search-input" placeholder="Enter tv show title">
+    <button id="tv-search-button">Search</button>
+    
+    <div id="tv-search-results"></div>
 
-    <div id="movie-search-results"></div> -->
-
-    <!-- Form to add Movie to Watchlist -->
-    <!-- <h3>Add Movie to Watchlist</h3>
-    <form id="add-movie-form">
-        <input type="text" id="movie-id" placeholder="Enter Movie ID" required />
-        <button type="submit">Add Movie to Watchlist</button>
-    </form>
- -->
-    <!-- Form to add TV Show to Watchlist (hidden while I get Movies working) -->
-    <!-- <h3>Add TV Show to Watchlist</h3>
-    <form id="add-tv-show-form">
-        <input type="text" id="tv-show-id" placeholder="Enter TV Show ID" required />
-        <button type="submit">Add TV Show to Watchlist</button>
-    </form> -->
+    <h1>Add API References below</h1>
 
     <script>
-        // Get the user ID from the server-side
-        //const userId = '<%= user.id %>'; // Embed the user ID from the server-side EJS rendering
-        
-
-        // V1 Search for Movies/TV Shows using OMDb API
-        /* document.getElementById('movie-search-button').onclick = async function() {
-            const searchTerm = document.getElementById('movie-search-input').value;
-            const apiKey = '144a0d98'; // Replace with your OMDb API key
-            const response = await fetch(`http://www.omdbapi.com/?s=${searchTerm}&apikey=${apiKey}`);
-            const data = await response.json();
-
-            const resultsDiv = document.getElementById('movie-search-results');
-            resultsDiv.innerHTML = ''; // Clear previous results
-
-            if (data.Response === 'True') {
-                data.Search.forEach(item => {
-                    const resultItem = document.createElement('div');
-                    resultItem.innerHTML = `
-                        <strong>${item.Title}</strong> (${item.Year}) 
-                        <button onclick="selectMovie('${item.imdbID}')">Add to Watchlist</button>
-                    `;
-                    resultsDiv.appendChild(resultItem);
-                });
-            } else {
-                resultsDiv.innerHTML = `<p>No results found.</p>`;
-            }
-        };  */
-
-        // Function to handle adding the selected movie to the watchlist
-        /* function selectMovie(imdbID) {
-            document.getElementById('movie-id').value = imdbID; // Set the movie ID to the input
-            //alert(`Selected ${imdbID}. Now you can add it to your watchlist.`);
-        } */
-
-        // Add to Movie Watchlist
-        /* document.getElementById('add-movie-form').onsubmit = async function(event) {
-            event.preventDefault();
-            const movieId = document.getElementById('movie-id').value;
-
-            try {
-                const response = await fetch('/watchlist/movie', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ userId, movieId }),
-                });
-
-                if (response.ok) {
-                    alert('Movie added to watchlist!');
-                } else {
-                const errorData = await response.json();
-                alert(`Error adding movie to watchlist: ${errorData.message || 'Unknown error'}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error adding movie to watchlist. Please try again.');
-            }
-        }; */
-
-        // Add to TV Watchlist
-        /* document.getElementById('add-tv-show-form').onsubmit = async function(event) {
-            event.preventDefault();
-            const tvShowId = document.getElementById('tv-show-id').value;
-
-            const response = await fetch('/watchlist/tv', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId, tvShowId }),
-            });
-
-            if (response.ok) {
-                alert('TV show added to watchlist!');
-            } else {
-                alert('Error adding TV show to watchlist.');
-            }
-        }; */
     </script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const { sequelize, User, MovieWatchlist, Movie, TVWatchlist } = require('../models');
-const OMDB_API_KEY = '144a0d98'; 
+const { sequelize, User, MovieWatchlist, Movie } = require('../models');
+const OMDB_API_KEY = '144a0d98';
 
 // Main home page login reset page
 router.get('/', (req, res) => {
@@ -21,7 +21,7 @@ router.get('/watchlist', (req, res) => {
     }
 });
 
-// Search OMDB via GET API endpoints
+// Search OMDB via GET API endpoints and search for Movies
 router.get('/search', async (req, res) => {
     const searchQuery = req.query.q;
     
@@ -30,14 +30,22 @@ router.get('/search', async (req, res) => {
     }
     
     try {
-        const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&apikey=${OMDB_API_KEY}`);
+        const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=movie&apikey=${OMDB_API_KEY}`);
         
         if (response.data.Response === 'True') {
-            res.json(response.data.Search);  // Send search results back to client
+            const movies = response.data.Search.map(movie => ({
+                Title: movie.Title || movie.title,
+                Year: movie.Year || movie.year,
+                imdbID: movie.imdbID,
+                Poster: movie.Poster || movie.poster,
+            }));
+            res.json(movies); // Send TV show results
+            //res.json(response.data.Search);  // Send search results back to client
         } else {
             res.status(404).json({ error: response.data.Error });
         }
     } catch (error) {
+        console.error('Error searching for TV shows:', error);
         res.status(500).json({ error: 'An error occurred while searching' });
     }
 }); 
@@ -53,11 +61,9 @@ router.post('/add-to-watchlist', async (req, res) => {
 
     const userId = req.user.id
 
-    //console.log('Incoming data:', { imdbID, userId });
-
     try {
         // Fetch movie data from OMDb API based on the imdbID
-        const movieResponse = await axios.get(`http://www.omdbapi.com/?i=${imdbID}&apikey=${OMDB_API_KEY}`);
+        const movieResponse = await axios.get(`http://www.omdbapi.com/?i=${imdbID}&type=movie&apikey=${OMDB_API_KEY}`);
 
         if (movieResponse.data.Response === 'True') {
             const movieData = movieResponse.data;
@@ -70,6 +76,8 @@ router.post('/add-to-watchlist', async (req, res) => {
                     year: movieData.Year,
                     genre: movieData.Genre,
                     runtime: movieData.Runtime,
+                    type: movieData.Type,
+                    poster: movieData.Poster,
                     // Add other fields
                 }
             });
@@ -96,7 +104,7 @@ router.post('/add-to-watchlist', async (req, res) => {
             return res.status(404).json({ error: '/routes/watchlist.js - Movie not found' });
         }
     } catch (error) {
-        console.error('Error adding to watchlist:', error);
+        console.error('Error adding Movie to watchlist:', error);
         return res.status(500).json({ error: '/routes/watchlist.js - 500 error' });
     }
 });

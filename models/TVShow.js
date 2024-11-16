@@ -4,7 +4,7 @@ module.exports = (sequelize) => {
     class TVShow extends Model {}
 
     TVShow.init({
-        tvdbID: {
+        imdbID: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,
@@ -21,7 +21,13 @@ module.exports = (sequelize) => {
         },
         seasons: {
             type: DataTypes.INTEGER,
-        }
+        },
+        type: {
+            type: DataTypes.STRING,
+        },
+        poster: {
+            type: DataTypes.INTEGER,
+        },
         // Add more fields if needed
     }, {
         sequelize, 

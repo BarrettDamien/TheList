@@ -22,7 +22,13 @@ module.exports = (sequelize) => {
         },
         runtime: {
             type: DataTypes.STRING,
-        }
+        },
+        type: {
+            type: DataTypes.STRING,
+        },
+        poster: {
+            type: DataTypes.INTEGER,
+        },
         // Add more fields if needed
     }, {
         sequelize, 

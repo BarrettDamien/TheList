@@ -12,12 +12,12 @@ module.exports = (sequelize) => {
                 key: 'id',
             }
         },
-        showId: {
+        tvShowId: {
             type: DataTypes.STRING,
             allowNull: false,
             references: {
                 model: 'tvshow', // Reference to TVShow model
-                key: 'imdbID',
+                key: 'id',
             }
         }
     }, {
