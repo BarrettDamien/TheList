@@ -3,23 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Random Movie</title>
     <script src="randomize.js" defer></script>
 </head>
 <body>
+    <!-- Radio buttons to choose between Movie or TV -->
+    <div>
+        <label><input type="radio" name="media-type" value="movie" checked> Movie</label>
+        <label><input type="radio" name="media-type" value="tv"> TV</label>
+    </div>
+
     <div>
         <label for="genre-select">Select Genre:</label>
         <select id="genre-select">
+            <option value="">All</option>
             <option value="Comedy">Comedy</option>
             <option value="Drama">Drama</option>
             <option value="Action">Action</option>
-            <!-- Add more genres as needed -->
         </select>
     </div>
     
     <!-- Button to trigger randomizer -->
-    <button id="randomize-button">Randomize</button>
-    
+    <button id="randomize-button">Pick something for me</button>
+        
     <!-- Display random selection -->
     <div id="random-selection"></div>
 </body>

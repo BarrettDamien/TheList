@@ -1,7 +1,13 @@
 const { Model, DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
-    class MovieWatchlist extends Model {}
+    class MovieWatchlist extends Model {
+        static associate(models) {
+            // Define the relationship here
+            MovieWatchlist.belongsTo(models.Movie, { foreignKey: 'movieId' });
+            MovieWatchlist.belongsTo(models.User, { foreignKey: 'userId' });
+        }
+    }
 
     MovieWatchlist.init({
         userId: {
