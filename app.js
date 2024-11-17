@@ -35,6 +35,6 @@ app.use('/auth', authRouter);
 app.use('/watchlist', watchlistRouter);
 app.use('/tv-watchlist', tvWatchlistRouter);
 app.use('/randomize', movieRandomRouter);
-app.use('/tv-randomize', tvRandomRouter);
+app.use('/randomize-tv', tvRandomRouter);
 
 module.exports = app;

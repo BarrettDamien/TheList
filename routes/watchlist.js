@@ -1,7 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const { sequelize, User, MovieWatchlist, Movie } = require('../models');
+const { MovieWatchlist, Movie } = require('../models');
 const OMDB_API_KEY = '144a0d98';
 
 // Main home page login reset page
@@ -13,13 +13,13 @@ router.get('/', (req, res) => {
     }
 });
 
-router.get('/watchlist', (req, res) => {
+/* router.get('/watchlist', (req, res) => {
     if(req.user) {
         res.render('watchlist', { user: req.user  }); // Pass user ID to the template
     } else {
         res.redirect('/auth/login');
     }
-});
+}); */
 
 // Search OMDB via GET API endpoints and search for Movies
 router.get('/search', async (req, res) => {
@@ -108,33 +108,5 @@ router.post('/add-to-watchlist', async (req, res) => {
         return res.status(500).json({ error: '/routes/watchlist.js - 500 error' });
     }
 });
-
-// Add to Movie Watchlist
-/* router.post('/movie', async (req, res) => {
-    try {
-        const { userId, movieId } = req.body; // Ensure these fields are sent in the request body
-        await MovieWatchlist.create({ userId, movieId });
-        res.status(201).send({ message: 'Movie added to watchlist successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ message: 'An error occurred. Please try again.' });
-    }
-    console.log('MovieWatchlist:', MovieWatchlist);
-    console.log('Is MovieWatchlist a model?', MovieWatchlist instanceof sequelize.Model); // Should be true
-});
-
-// Add to TV Watchlist
-router.post('/tv', async (req, res) => {
-    try {
-        const { userId, tvShowId } = req.body; // Ensure these fields are sent in the request body
-        await TVWatchlist.create({ userId, tvShowId });
-        res.status(201).send({ message: 'TV show added to watchlist successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ message: 'An error occurred. Please try again.' });
-    }
-    console.log('TVWatchlist:', MovieWatchlist);
-    console.log('Is TVWatchlist a model?', MovieWatchlist instanceof sequelize.Model); // Should be true
-}); */
 
 module.exports = router;

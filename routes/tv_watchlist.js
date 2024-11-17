@@ -1,7 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const { TVShow, TVWatchlist } = require('../models'); // Adjust for your models
+const { TVShow, TVWatchlist } = require('../models'); 
 const OMDB_API_KEY = '144a0d98';
 
 // Main home page login reset page
@@ -13,13 +13,13 @@ router.get('/', (req, res) => {
     }
 });
 
-router.get('/watchlist', (req, res) => {
+/* router.get('/watchlist', (req, res) => {
     if(req.user) {
         res.render('watchlist', { user: req.user  }); // Pass user ID to the template
     } else {
         res.redirect('/auth/login');
     }
-});
+}); */
 
 // Search OMDB via GET API endpoints and search for TV shows
 router.get('/search', async (req, res) => {
