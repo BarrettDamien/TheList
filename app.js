@@ -12,7 +12,7 @@ sequelize.authenticate()
   .catch(err => console.error('Unable to connect to the database:', err));
 
 
-sequelize.sync({ force: true }).then(() => { //add 'force: true' to curly brackets to drop tables when app boots
+sequelize.sync({  }).then(() => { //add 'force: true' to curly brackets to drop tables when app boots
     console.log('Database & tables created!')
 }).catch((error) => {
     console.error('Error syncing database:', error)
