@@ -9,6 +9,11 @@ module.exports = (sequelize) => {
     }
 
     TVShow.init({
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
         imdbID: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -31,13 +36,14 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
         },
         poster: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
         },
         // Add more fields if needed
     }, {
         sequelize, 
         modelName: 'tvshow',
-        tableName: 'tvshow'
+        tableName: 'tvshow',
+        timestamps: true,
     })
 
     return TVShow;

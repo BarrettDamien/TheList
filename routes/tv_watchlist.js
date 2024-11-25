@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 const { TVShow, TVWatchlist } = require('../models'); 
-const OMDB_API_KEY = '144a0d98';
+const OMDB_KEY = process.env.OMDB_API_KEY;
 
 // Main home page login reset page
 router.get('/', (req, res) => {
@@ -30,7 +30,7 @@ router.get('/search', async (req, res) => {
     }
 
     try {
-        const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=series&apikey=${OMDB_API_KEY}`);
+        const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=series&apikey=${OMDB_KEY}`);
 
         if (response.data.Response === 'True') {
             const tvShows = response.data.Search.map(tv => ({
@@ -63,7 +63,7 @@ router.post('/add-to-watchlist', async (req, res) => {
     const userId = req.user.id
 
     try {
-        const tvResponse = await axios.get(`http://www.omdbapi.com/?i=${imdbID}&type=series&apikey=${OMDB_API_KEY}`);
+        const tvResponse = await axios.get(`http://www.omdbapi.com/?i=${imdbID}&type=series&apikey=${OMDB_KEY}`);
 
         if (tvResponse.data.Response === 'True') {
             const tvData = tvResponse.data;

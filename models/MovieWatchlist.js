@@ -16,20 +16,25 @@ module.exports = (sequelize) => {
             references: {
                 model: 'user', // Reference to User model
                 key: 'id',
-            }
+            },
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
         },
         movieId: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: 'movie', // Reference to Movie model
                 key: 'id',
-            }
+            },
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
         }
     }, {
         sequelize, 
         modelName: 'movie_watchlist',
-        tableName: 'movie_watchlist'
+        tableName: 'movie_watchlist',
+        timestamps: true,
     })
 
     return MovieWatchlist;

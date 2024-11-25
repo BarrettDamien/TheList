@@ -17,17 +17,18 @@ module.exports = (sequelize) => {
             unique: true
         },
         password: {
-            type: DataTypes.STRING(64),
+            type: DataTypes.STRING,
             allowNull: false,
         },
         salt: {
-            type: DataTypes.STRING(64),
+            type: DataTypes.STRING,
             allowNull: false
         }
     }, {
         sequelize, 
         modelName: 'user',
-        tableName: 'user'
+        tableName: 'user',
+        timestamps: true,
     })
 
     return User;

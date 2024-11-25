@@ -1,15 +1,15 @@
-const express = require('express');
-const axios = require('axios');
-const router = express.Router();
-const { MovieWatchlist, Movie } = require('../models');
-const OMDB_API_KEY = '144a0d98';
+const express = require('express')
+const axios = require('axios')
+const router = express.Router()
+const { MovieWatchlist, Movie } = require('../models')
+const OMDB_KEY = process.env.OMDB_API_KEY
 
 // Main home page login reset page
 router.get('/', (req, res) => {
     if(req.user) {
-        res.render('watchlist', { user: req.user  }); // Pass user ID to the template
+        res.render('watchlist', { user: req.user  }) // Pass user ID to the template
     } else {
-        res.redirect('/auth/login');
+        res.redirect('/auth/login')
     }
 });
 
@@ -23,14 +23,15 @@ router.get('/', (req, res) => {
 
 // Search OMDB via GET API endpoints and search for Movies
 router.get('/search', async (req, res) => {
-    const searchQuery = req.query.q;
+    const searchQuery = req.query.q
+    console.log('OMDB_KEY:', process.env.OMDB_API_KEY)
     
     if (!searchQuery) {
-        return res.status(400).json({ error: 'Search query is required' });
+        return res.status(400).json({ error: 'Search query is required' })
     }
     
     try {
-        const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=movie&apikey=${OMDB_API_KEY}`);
+        const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=movie&apikey=${OMDB_KEY}`)
         
         if (response.data.Response === 'True') {
             const movies = response.data.Search.map(movie => ({
@@ -42,11 +43,11 @@ router.get('/search', async (req, res) => {
             res.json(movies); // Send TV show results
             //res.json(response.data.Search);  // Send search results back to client
         } else {
-            res.status(404).json({ error: response.data.Error });
+            res.status(404).json({ error: response.data.Error })
         }
     } catch (error) {
-        console.error('Error searching for TV shows:', error);
-        res.status(500).json({ error: 'An error occurred while searching' });
+        console.error('Error searching for TV shows:', error)
+        res.status(500).json({ error: 'An error occurred while searching' })
     }
 }); 
 
@@ -63,7 +64,7 @@ router.post('/add-to-watchlist', async (req, res) => {
 
     try {
         // Fetch movie data from OMDb API based on the imdbID
-        const movieResponse = await axios.get(`http://www.omdbapi.com/?i=${imdbID}&type=movie&apikey=${OMDB_API_KEY}`);
+        const movieResponse = await axios.get(`http://www.omdbapi.com/?i=${imdbID}&type=movie&apikey=${OMDB_KEY}`)
 
         if (movieResponse.data.Response === 'True') {
             const movieData = movieResponse.data;
@@ -90,7 +91,7 @@ router.post('/add-to-watchlist', async (req, res) => {
             });
 
             if (existingEntry) {
-                return res.status(409).json({ error: 'Movie already in watchlist' });
+                return res.status(409).json({ error: 'Movie already in watchlist' })
             }
 
             // Add the movie to the user's watchlist
@@ -99,14 +100,14 @@ router.post('/add-to-watchlist', async (req, res) => {
                 movieId: movieRecord.id ,
             });
 
-            return res.status(201).json({ message: '/routes/watchlist.js - Movie added to watchlist', movie: movieRecord });
+            return res.status(201).json({ message: '/routes/watchlist.js - Movie added to watchlist', movie: movieRecord })
         } else {
-            return res.status(404).json({ error: '/routes/watchlist.js - Movie not found' });
+            return res.status(404).json({ error: '/routes/watchlist.js - Movie not found' })
         }
     } catch (error) {
         console.error('Error adding Movie to watchlist:', error);
-        return res.status(500).json({ error: '/routes/watchlist.js - 500 error' });
+        return res.status(500).json({ error: '/routes/watchlist.js - 500 error' })
     }
 });
 
-module.exports = router;
+module.exports = router

@@ -19,7 +19,7 @@ passport.use(new LocalStrategy(async function verify(username, password, done) {
                 return done(err)
             }
 
-            if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
+            if (!crypto.timingSafeEqual(Buffer.from(user.password, 'hex'), hashedPassword)) {
                 return done(null, false, { message: 'Incorrect username or password'})
             }
 
@@ -61,7 +61,7 @@ router.post('/signup', (req, res, next) => {
         try {
             const user = await User.create({
                 username: req.body.username,
-                password: hashedPassword,
+                password: hashedPassword.toString('hex'),
                 salt: salt
             })
 
@@ -74,7 +74,11 @@ router.post('/signup', (req, res, next) => {
             })
         } catch (e) {
             console.error("Error creating user:", e);
-            res.redirect('/auth/signup?failed=2')
+            if (e.name === 'SequelizeUniqueConstraintError') {
+                res.redirect('/auth/signup?failed=2'); // Username taken
+            } else {
+                res.redirect('/auth/signup?failed=1'); // Other error
+            }
         }
     })
 })
