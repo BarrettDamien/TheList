@@ -6,7 +6,7 @@ const { Op } = require('sequelize'); //sequelize operator
 
 router.get('/', (req, res) => {
     if(req.user) {
-        res.render('randomize', { user: req.user  }); // Pass user ID to the template
+        res.render('randomize', { user: req.user, username: req.user.username  }); // Pass user ID to the template
     } else {
         res.redirect('/auth/login');
     }

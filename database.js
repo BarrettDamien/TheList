@@ -35,13 +35,13 @@ const sequelize = process.env.DATABASE_URL ? new Sequelize(process.env.DATABASE_
     },
 })
 : new Sequelize(
-    process.env.DATABASE_NAME || 'theListDB', // Default to 'theListDB' for local dev if not set
-    process.env.DATABASE_USER || 'your_local_db_user', // Local fallback username
-    process.env.DATABASE_PASSWORD || 'your_local_db_password', // Local fallback password
+    process.env.DATABASE_NAME, // Default to 'theListDB' for local dev if not set
+    process.env.DATABASE_USER, // Local fallback username
+    process.env.DATABASE_PASSWORD, // Local fallback password
     {
-    host: process.env.DATABASE_HOST || '127.0.0.1', // Default to localhost for local dev
+    host: process.env.DATABASE_HOST, // Default to localhost for local dev
     dialect: 'postgres',
-    port: process.env.DATABASE_PORT || 5432, // Default PostgreSQL port
+    port: process.env.DATABASE_PORT, // Default PostgreSQL port
     logging: console.log, // Optional: set to `false` to disable query logging
     }
 )

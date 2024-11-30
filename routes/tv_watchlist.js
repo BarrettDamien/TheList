@@ -7,7 +7,7 @@ const OMDB_KEY = process.env.OMDB_API_KEY;
 // Main home page login reset page
 router.get('/', (req, res) => {
     if(req.user) {
-        res.render('watchlist', { user: req.user  }); // Pass user ID to the template
+        res.render('watchlist', { user: req.user, username: req.user.username  }); // Pass user ID to the template
     } else {
         res.redirect('/auth/login');
     }

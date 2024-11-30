@@ -24,6 +24,7 @@ var watchlistRouter = require('./routes/watchlist')
 var tvWatchlistRouter = require('./routes/tv_watchlist')
 var movieRandomRouter = require('./routes/movie_randomize')
 var tvRandomRouter = require('./routes/tv_randomize')
+var mergedRandomRouter = require('./routes/merged_randomize')
 
 var app = express()
 
@@ -43,5 +44,6 @@ app.use('/watchlist', watchlistRouter)
 app.use('/tv-watchlist', tvWatchlistRouter)
 app.use('/randomize', movieRandomRouter)
 app.use('/randomize-tv', tvRandomRouter)
+app.use('/randomize-all', mergedRandomRouter)
 
 module.exports = app
