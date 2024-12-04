@@ -13,35 +13,35 @@ router.get('/', (req, res) => {
     }
 });
 
-/* router.get('/watchlist', (req, res) => {
-    if(req.user) {
-        res.render('watchlist', { user: req.user  }); // Pass user ID to the template
-    } else {
-        res.redirect('/auth/login');
-    }
-}); */
-
 // Search OMDB via GET API endpoints and search for TV shows
 router.get('/search', async (req, res) => {
-    const searchQuery = req.query.q;
+    const { q: searchQuery, page = 1 } = req.query;
+
+    console.log('OMDB_KEY:', process.env.OMDB_API_KEY);
+
+    if (!/^[a-zA-Z0-9\s]+$/.test(searchQuery)) {
+        return res.status(400).json({ error: 'Invalid search query.' });
+    }
 
     if (!searchQuery) {
         return res.status(400).json({ error: 'Search query is required' });
     }
 
     try {
-        const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=series&apikey=${OMDB_KEY}`);
+        const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=series&apikey=${OMDB_KEY}&page=${page}`);
 
         if (response.data.Response === 'True') {
             const tvShows = response.data.Search.map(tv => ({
-                title: tv.Title || tv.title,
-                year: tv.Year || tv.year,
+                Title: tv.Title || tv.title,
+                Year: tv.Year || tv.year,
                 imdbID: tv.imdbID,
-                poster: tv.Poster || tv.poster,
+                Poster: tv.Poster || tv.poster,
             }));
-            res.json(tvShows); // Send TV show results
-            //res.json(response.data.Search);  // Send search results back to client
-            
+            res.json({
+                results: tvShows,
+                totalResults: parseInt(response.data.totalResults, 10) || 0,
+                currentPage: parseInt(page, 10),
+            });    
         } else {
             res.status(404).json({ error: response.data.Error });
         }
@@ -49,7 +49,7 @@ router.get('/search', async (req, res) => {
         console.error('Error searching for TV shows:', error);
         res.status(500).json({ error: 'Server error occurred while searching for TV shows' });
     }
-});
+}); 
 
 // Add a TV show to the watchlist
 router.post('/add-to-watchlist', async (req, res) => {

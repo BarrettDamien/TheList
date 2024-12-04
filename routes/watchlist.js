@@ -1,7 +1,7 @@
 const express = require('express')
 const axios = require('axios')
 const router = express.Router()
-const { MovieWatchlist, Movie } = require('../models')
+const { MovieWatchlist, Movie, User, TVWatchlist, TVShow } = require('../models')
 const OMDB_KEY = process.env.OMDB_API_KEY
 
 // Main home page login reset page
@@ -13,43 +13,46 @@ router.get('/', (req, res) => {
     }
 });
 
-/* router.get('/watchlist', (req, res) => {
-    if(req.user) {
-        res.render('watchlist', { user: req.user  }); // Pass user ID to the template
-    } else {
-        res.redirect('/auth/login');
-    }
-}); */
-
 // Search OMDB via GET API endpoints and search for Movies
 router.get('/search', async (req, res) => {
-    const searchQuery = req.query.q
-    console.log('OMDB_KEY:', process.env.OMDB_API_KEY)
-    
-    if (!searchQuery) {
-        return res.status(400).json({ error: 'Search query is required' })
+    const { q: searchQuery, page = 1 } = req.query;
+
+    console.log('OMDB_KEY:', process.env.OMDB_API_KEY);
+
+    if (!/^[a-zA-Z0-9\s]+$/.test(searchQuery)) {
+        return res.status(400).json({ error: 'Invalid search query.' });
     }
-    
+
+    if (!searchQuery) {
+        return res.status(400).json({ error: 'Search query is required' });
+    }
+
     try {
-        const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=movie&apikey=${OMDB_KEY}`)
-        
+        const response = await axios.get(
+            `http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=movie&apikey=${OMDB_KEY}&page=${page}`
+        );
+
         if (response.data.Response === 'True') {
-            const movies = response.data.Search.map(movie => ({
+            const movies = response.data.Search.map((movie) => ({
                 Title: movie.Title || movie.title,
                 Year: movie.Year || movie.year,
                 imdbID: movie.imdbID,
                 Poster: movie.Poster || movie.poster,
             }));
-            res.json(movies); // Send TV show results
-            //res.json(response.data.Search);  // Send search results back to client
+
+            res.json({
+                results: movies,
+                totalResults: parseInt(response.data.totalResults, 10) || 0,
+                currentPage: parseInt(page, 10),
+            });
         } else {
-            res.status(404).json({ error: response.data.Error })
+            res.status(404).json({ error: response.data.Error });
         }
     } catch (error) {
-        console.error('Error searching for TV shows:', error)
-        res.status(500).json({ error: 'An error occurred while searching' })
+        console.error('Error searching for movies:', error);
+        res.status(500).json({ error: 'An error occurred while searching' });
     }
-}); 
+});
 
 // From the GET request, POST request to add to watchlist directly
 router.post('/add-to-watchlist', async (req, res) => {
@@ -109,5 +112,99 @@ router.post('/add-to-watchlist', async (req, res) => {
         return res.status(500).json({ error: '/routes/watchlist.js - 500 error' })
     }
 });
+
+// Adding a watchlist viewer function
+
+// Get the user's watchlist
+router.get('/viewer', async (req, res) => {
+    try {
+        const user = req.user; // Assuming the user is authenticated
+        if (!user) {
+            return res.redirect('/auth/login'); // Redirect to login if not authenticated
+        }
+
+        const username = user.username;
+
+        // Fetch the user's movie and TV show watchlists
+        const movies = await MovieWatchlist.findAll({
+            where: { userId: user.id },
+            include: [{ model: Movie, attributes: ['id','title', 'year', 'imdbID', 'poster'] }],
+            raw:true,
+        });
+        console.log(movies);
+
+        const tvShows = await TVWatchlist.findAll({
+            where: { userId: user.id },
+            include: [{ model: TVShow, attributes: ['id','title', 'year', 'imdbID', 'poster'] }],
+            raw:true,
+        });
+        console.log(tvShows);
+
+        // Extract movie and TV show data
+        const movieData = movies.map(item => ({
+            title: item['movie.title'],  // Accessing flattened field
+            year: item['movie.year'],
+            poster: item['movie.poster'],
+            id: item['movie.id']
+        }));
+        const tvShowData = tvShows.map(item => ({
+            title: item['tvshow.title'],  // Accessing flattened field
+            year: item['tvshow.year'],
+            poster: item['tvshow.poster'],
+            id: item['tvshow.id']
+        }));
+
+        console.log("Mapped movieData: ", movieData); 
+        console.log("Mapped tvShowData: ", tvShowData);
+
+        res.render('viewer', { movies: movieData, tvShows: tvShowData, username: username, });
+    } catch (error) {
+        console.error("Error fetching watchlist:", error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Adding watchlist removal option
+router.post('/remove', async (req, res) => {
+    console.log('Request to remove from watchlist:', req.body);
+    const { itemId, type } = req.body;
+
+    if (!itemId || !type) {
+        return res.status(400).json({ error: 'itemId or type is missing' });
+    }
+
+    const user = req.user; // Assuming authentication middleware
+    if (!user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    try {
+        if (type === 'movie') {
+            const deleted = await MovieWatchlist.destroy({
+                where: { movieId: itemId, userId: user.id },
+            });
+            if (deleted) {
+                return res.status(200).json({ message: 'Movie removed from watchlist' });
+            } else {
+                return res.status(404).json({ error: 'Movie not found in watchlist' });
+            }
+        } else if (type === 'tv') {
+            const deleted = await TVWatchlist.destroy({
+                where: { tvShowId: itemId, userId: user.id },
+            });
+            if (deleted) {
+                return res.status(200).json({ message: 'TV show removed from watchlist' });
+            } else {
+                return res.status(404).json({ error: 'TV show not found in watchlist' });
+            }
+        } else {
+            return res.status(400).json({ error: 'Invalid type' });
+        }
+    } catch (error) {
+        console.error('Error during removal:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 module.exports = router

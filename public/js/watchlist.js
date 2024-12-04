@@ -1,112 +1,112 @@
 // *** MOVIES ***
 // Frontend for searching Movies
-document.getElementById('movie-search-button').onclick = async function() {
-    const searchTerm = document.getElementById('movie-search-input').value.trim()
+const movieResultsDiv = document.getElementById("movie-search-results");
+const moviePaginationDiv = document.getElementById("movie-pagination");
+let currentMoviePage = 1;
 
-    // Make a GET request to the server's search endpoint
-    const response = await fetch(`/watchlist/search?q=${encodeURIComponent(searchTerm)}`)
-    
+document.getElementById("movie-search-button").onclick = () => {
+    currentMoviePage = 1; // Reset to page 1 on new search
+    fetchMovies();
+};
+
+async function fetchMovies(page = 1) {
+    const searchTerm = document.getElementById("movie-search-input").value.trim();
+    if (!searchTerm) return;
+
+    const response = await fetch(`/watchlist/search?q=${encodeURIComponent(searchTerm)}&page=${page}`);
     if (response.ok) {
-        const data = await response.json()
-        console.log(data); // Debugging: Log API response
-        const resultsDiv = document.getElementById('movie-search-results')
-        resultsDiv.innerHTML = ''; // Clear previous results
-
-        if (data && data.length > 0) {
-            data.forEach(movie => {
-                const resultItem = document.createElement('div')
-                resultItem.innerHTML = `
-                    <strong>${movie.Title}</strong> (${movie.Year}) 
-                    <button onclick="addToWatchlist('${movie.imdbID}')">Add to Movie Watchlist</button>
-                `;
-                resultsDiv.appendChild(resultItem);
-            });
-        } else {
-            resultsDiv.innerHTML = `<p>No results found.</p>`
-        }
+        const data = await response.json();
+        renderMovies(data.results || []);
+        renderPagination(data.totalResults, page, fetchMovies);
     } else {
-        const errorData = await response.json();
-        console.error('Error fetching search results:', errorData.error)
-        alert(`Error fetching search results: ${errorData.error}`)
+        console.error("Error fetching movie search results:", await response.text());
+        movieResultsDiv.innerHTML = "<p>Error fetching movie results.</p>";
     }
 }
 
-// Frontend for adding Movies to watchlist
-async function addToWatchlist(imdbID) {
-    const response = await fetch('/watchlist/add-to-watchlist', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ imdbID  })
-    })
+function renderMovies(movies) {
+    movieResultsDiv.innerHTML = movies.length
+        ? movies
+              .map(
+                  (movie) => `
+            <div>
+                <strong>${movie.Title}</strong> (${movie.Year}) 
+                <button class="btn btn-secondary btn-sm" onclick="addToWatchlist('${movie.imdbID}')">Add to Movie Watchlist</button>
+            </div>
+        `
+              )
+              .join("")
+        : "<p>No results found.</p>";
+}
 
-    if (response.ok) {
-        alert('Movie added to watchlist!')
-    } else {
-        const errorData = await response.json()
-        alert(`Error: ${errorData.error}`)
-    }
+function renderPagination(totalResults, currentPage, callback) {
+    const totalPages = Math.ceil(totalResults / 10); // Assuming 10 results per page
+    moviePaginationDiv.innerHTML = Array.from({ length: totalPages }, (_, i) => {
+        const page = i + 1;
+        return `<li class="page-item ${currentPage === page ? "active" : ""}">
+            <button class="page-link" onclick="${callback.name}(${page})">${page}</button>
+        </li>`;
+    }).join("");
+}
+
+async function addToWatchlist(imdbID) {
+    const response = await fetch("/watchlist/add-to-watchlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imdbID }),
+    });
+
+    alert(response.ok ? "Movie added to watchlist!" : `Error: ${await response.text()}`);
 }
 
 // *** TV SHOWS ***
 // Frontend for searching TV shows
-document.getElementById('tv-search-button').onclick = async function () {
-    const searchTerm = document.getElementById('tv-search-input').value.trim();
+const tvResultsDiv = document.getElementById("tv-search-results");
+const tvPaginationDiv = document.getElementById("tv-pagination");
+let currentTvPage = 1;
 
-    const response = await fetch(`/tv-watchlist/search?q=${encodeURIComponent(searchTerm)}`);
-
-    if (response.ok) {
-        const data = await response.json();
-        console.log(data); // Debugging: Log API response
-        const resultsDiv = document.getElementById('tv-search-results');
-        resultsDiv.innerHTML = ''; // Clear previous results
-
-        if (data && data.length > 0) {
-            data.forEach((tvShow) => {
-                const resultItem = document.createElement('div');
-                /* resultItem.innerHTML = `
-                    <div class="card mb-2" style="width: 18rem;">
-                        <img src="${tvShow.Poster !== 'N/A' ? tvShow.Poster : 'placeholder.jpg'}" 
-                             class="card-img-top" alt="${tvShow.Title}">
-                        <div class="card-body">
-                            <h5 class="card-title">${tvShow.Title}</h5>
-                            <p class="card-text">Year: ${tvShow.Year || 'N/A'}</p>
-                            <button onclick="addToTVWatchlist('${tvShow.imdbID}')" 
-                                    class="btn btn-primary">Add to Watchlist</button>
-                        </div>
-                    </div>
-                    
-                `; */
-                resultItem.innerHTML = `
-                    <strong>${tvShow.title}</strong> (${tvShow.year || 'N/A'}) 
-                    <button onclick="addToTVWatchlist('${tvShow.imdbID}')">Add to TV Watchlist</button>
-                `;
-                resultsDiv.appendChild(resultItem);
-            });
-        } else {
-            resultsDiv.innerHTML = '<p>No results found.</p>';
-        }
-    } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.error}`);
-    }
+document.getElementById("tv-search-button").onclick = () => {
+    currentTvPage = 1;
+    fetchTvShows();
 };
 
-// Frontend for adding TV shows to the watchlist
-async function addToTVWatchlist(imdbID) {
-    const response = await fetch('/tv-watchlist/add-to-watchlist', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+async function fetchTvShows(page = 1) {
+    const searchTerm = document.getElementById("tv-search-input").value.trim();
+    if (!searchTerm) return;
+
+    const response = await fetch(`/tv-watchlist/search?q=${encodeURIComponent(searchTerm)}&page=${page}`);
+    if (response.ok) {
+        const data = await response.json();
+        renderTvShows(data.results || []);
+        renderPagination(data.totalResults, page, fetchTvShows);
+    } else {
+        console.error("Error fetching TV show results:", await response.text());
+        tvResultsDiv.innerHTML = "<p>Error fetching TV show results.</p>";
+    }
+}
+
+function renderTvShows(tvShows) {
+    tvResultsDiv.innerHTML = tvShows.length
+        ? tvShows
+              .map(
+                  (tvShow) => `
+            <div>
+                <strong>${tvShow.Title}</strong> (${tvShow.Year}) 
+                <button class="btn btn-secondary btn-sm" onclick="addToTvWatchlist('${tvShow.imdbID}')">Add to TV Watchlist</button>
+            </div>
+        `
+              )
+              .join("")
+        : "<p>No results found.</p>";
+}
+
+async function addToTvWatchlist(imdbID) {
+    const response = await fetch("/tv-watchlist/add-to-watchlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imdbID }),
     });
 
-    if (response.ok) {
-        alert('TV show added to watchlist!');
-    } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.error}`);
-    }
+    alert(response.ok ? "TV show added to watchlist!" : `Error: ${await response.text()}`);
 }
+
