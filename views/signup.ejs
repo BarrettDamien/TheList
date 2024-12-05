@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup</title>
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body class="d-flex flex-column h-100">
+  <header class="fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top permanent-marker-regular">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <img src="/images/favicon.ico" width="30" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/watchlist">Add to List</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/watchlist/viewer">My List</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/randomize">Randomizer</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main class="flex-shrink-0" role="main">
+    <% if (failed) {%>
+      <h4>
+        Error: <%= msg%>
+      </h4>
+      <% } %>
+        <section class="login-section">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6 text-black">
+
+                <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
+
+                  <form style="width: 23rem;" action="/auth/signup" method="post">
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input id="username" name="username" type="text" autocomplete="username" required autofocus
+                        class="form-control form-control-lg" />
+                      <label class="form-label permanent-marker-regular" for="username">Username</label>
+                    </div>
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                      <input id="current-password" name="password" type="password" autocomplete="current-password"
+                        required class="form-control form-control-lg" />
+                      <label class="form-label permanent-marker-regular" for="current-password">Password</label>
+                    </div>
+
+                    <div class="pt-1 mb-4">
+                      <button id="pngButton" class="custom-signup-btn w-50 h-auto" type="submit">
+                        <img src="/images/signup.png" alt="Button" class="img" style="pointer-events: none;">
+                      </button>
+                    </div>
+
+                    <h4 class="permanent-marker-regular">Been here before? <a href="/auth/login" class="link-info">Login
+                        here!</a></h4>
+
+                  </form>
+
+                </div>
+
+              </div>
+              <div class="mobile-hidden col-md-6 px-0 d-flex d-none d-md-block">
+                <img id="random-image" src="" alt="Random Login Image" class="img-fluid image-div ">
+              </div>
+            </div>
+          </div>
+        </section>
+  </main>
+  <footer class="footer fixed-bottom mt-auto py-3">
+    <div class="container">
+      <span class="permanent-marker-regular">Created by Damien Barrett for NCIRL College Project 2024</span>
+    </div>
+  </footer>
+  <script src="/js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
