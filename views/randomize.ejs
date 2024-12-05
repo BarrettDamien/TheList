@@ -12,9 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
-<body>
-    <header class="masthead mb-auto">
-        <nav class="navbar navbar-expand-lg navbar-dark permanent-marker-regular">
+<body class="d-flex flex-column h-100">
+    <header class="fixed-top">
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top permanent-marker-regular">
           <div class="container-fluid">
             <a class="navbar-brand" href="/">
                 <img src = "/images/favicon.ico" width="30" height="30" class="d-inline-block align-top" alt="">
@@ -28,7 +28,10 @@
                         <a class="nav-link" aria-current="page"  href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/watchlist">Watchlist</a>
+                        <a class="nav-link" href="/watchlist">Add to List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/watchlist/viewer">My List</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="/randomize">Randomizer</a>
@@ -48,7 +51,7 @@
           </div>
         </nav>
     </header>
-    <main class="inner cover container" role="main"> 
+    <main class="inner cover container flex-shrink-0" role="main"> 
         <!-- Pills navs -->
         <ul class="nav nav-fill nav-tabs" id="tabs" role="tablist">
             <li class="nav-item" role="presentation">
@@ -95,7 +98,7 @@
         <!-- Display random selection -->
         <div id="random-selection"></div>
     </main>
-    <footer class="footer">
+    <footer class="footer fixed-bottom mt-auto py-3">
         <div class = "container">
             <span class="permanent-marker-regular">Created by Damien Barrett for NCIRL College Project 2024</span>
         </div>
