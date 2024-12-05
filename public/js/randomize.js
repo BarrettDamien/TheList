@@ -15,11 +15,9 @@ document.querySelectorAll('.nav-link').forEach(tab => {
 // Handle the randomizer button click
 document.getElementById('randomize-button').onclick = async function () {
     try {
-        const genre = document.getElementById('genre-select').value || ''
         const endpoint = mediaType === 'tv' ? '/randomize-tv/randomize-tv' : '/randomize/randomize'
-        const query = genre ? `?q=${encodeURIComponent(genre)}` : ''
 
-        const response = await fetch(`${endpoint}${query}`)
+        const response = await fetch(`${endpoint}`)
         if (!response.ok) {
             const error = await response.json();
             alert(error.error || 'An error occurred.')

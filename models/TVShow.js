@@ -17,7 +17,6 @@ module.exports = (sequelize) => {
         imdbID: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true, // Ensures that each TV Show is only added once
         },
         title: {
             type: DataTypes.STRING,
