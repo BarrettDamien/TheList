@@ -12,10 +12,10 @@ sequelize.authenticate()
   .catch(err => console.error('Unable to connect to the database:', err));
 
 
-sequelize.sync({  }).then(() => { //add 'force: true' to curly brackets to drop tables when app boots
-    console.log('Database & tables created!')
+sequelize.sync({}).then(() => { //add 'force: true' to curly brackets to drop tables when app boots
+  console.log('Database & tables created!')
 }).catch((error) => {
-    console.error('Error syncing database:', error)
+  console.error('Error syncing database:', error)
 })
 
 var indexRouter = require('./routes/index')
@@ -34,7 +34,7 @@ app.set('view engine', 'ejs')
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(session({ secret: process.env.SECRET_KEY, resave: true, saveUninitialized: true}))
+app.use(session({ secret: process.env.SECRET_KEY, resave: true, saveUninitialized: true }))
 app.use(passport.initialize())
 app.use(passport.session())
 

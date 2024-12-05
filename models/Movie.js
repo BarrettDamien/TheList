@@ -4,7 +4,7 @@ module.exports = (sequelize) => {
     class Movie extends Model {
         static associate(models) {
             // Define the relationship here
-            Movie.hasMany(models.MovieWatchlist, { foreignKey: 'movieId' });
+            Movie.hasMany(models.MovieWatchlist, { foreignKey: 'movieId' })
         }
     }
 
@@ -39,6 +39,9 @@ module.exports = (sequelize) => {
         poster: {
             type: DataTypes.STRING,
         },
+        plot: {
+            type: DataTypes.STRING,
+        },
         // Add more fields if needed
     }, {
         sequelize, 
@@ -47,5 +50,5 @@ module.exports = (sequelize) => {
         timestamps: true,
     })
 
-    return Movie;
-};
+    return Movie
+}

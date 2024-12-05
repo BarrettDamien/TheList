@@ -1,3 +1,5 @@
+// Created this page with the idea of having a merged approach to the randomiser where users could search TV and Movies at once but it's on the backburner while I build out the rest of the app
+
 const express = require('express')
 const router = express.Router()
 const { Movie, MovieWatchlist, TVShow, TVWatchlist } = require('../models')
@@ -5,7 +7,7 @@ const { Op } = require('sequelize')
 
 router.get('/', (req, res) => {
     if (req.user) {
-        res.render('randomize', { user: req.user, username: req.user.username }); // Pass user data to template
+        res.render('randomize', { user: req.user, username: req.user.username }) // Pass user data to template
     } else {
         res.redirect('/auth/login')
     }
@@ -13,11 +15,11 @@ router.get('/', (req, res) => {
 
 // Randomize both TV Shows and Movies
 router.get('/randomize-all', async (req, res) => {
-    const genre = req.query.q; // Optional genre filter
-    const userId = req.user ? req.user.id : null;
+    const genre = req.query.q // Optional genre filter
+    const userId = req.user ? req.user.id : null
 
     if (!userId) {
-        console.log("User not logged in");
+        console.log("User not logged in")
         return res.status(401).json({ error: 'User must be logged in to use this feature.' })
     }
 

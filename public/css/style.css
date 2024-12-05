@@ -1,5 +1,5 @@
 /*
-Colour Ref
+Colour Ref for Synthwave Sunset theme
     #ffd319 	(255,211,25)
 	#ff901f 	(255,144,31)
 	#ff2975 	(255,41,117)
@@ -7,8 +7,9 @@ Colour Ref
 	#8c1eff 	(140,30,255)
 */
 
-html, body {
-    height: 100vh; 
+html,
+body {
+    height: 100vh;
     margin: 0;
     padding: 0;
     display: flex;
@@ -43,9 +44,9 @@ footer {
 }
 
 form {
-    width: 100%; 
-    max-width: 400px; 
-    margin: 0 auto; 
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 /* NavBar Customisation Start */
@@ -54,10 +55,10 @@ form {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000; 
+    z-index: 1000;
     background-color: #261447 !important;
     color: #ffffff !important;
-    width: 100%; 
+    width: 100%;
     height: 60px;
     display: flex;
     align-items: center;
@@ -67,6 +68,7 @@ form {
 .navbar .nav-link {
     color: #ffffff !important;
 }
+
 .navbar .nav-link.active {
     color: #d40078 !important;
     font-weight: bold;
@@ -92,45 +94,45 @@ form {
 }
 
 .btn-primary {
-    color: #2de2e6 !important; 
+    color: #2de2e6 !important;
     border-color: #2de2e6 !important;
     background-color: #261447 !important;
 }
 
 .btn-primary:hover {
-    color: #261447 !important; 
-    border-color: #2de2e6 !important; 
+    color: #261447 !important;
+    border-color: #2de2e6 !important;
     background-color: #2de2e6 !important;
 }
 
 .btn-outline-danger {
-    color: #ff3864 !important; 
+    color: #ff3864 !important;
     border-color: #ff3864 !important;
-    /* background-color: #261447 !important;  */
 }
-  
+
 .btn-outline-danger:hover {
-    background-color: #ff3864 !important; 
-    color: white !important; 
+    background-color: #ff3864 !important;
+    color: white !important;
 }
 
 span.me-2 {
     white-space: nowrap;
 }
+
 /* NavBar Customisation End */
 
 .custom-signup-btn {
-    background: transparent; 
-    border: none; 
-    padding: 0; 
-    overflow: hidden; 
+    background: transparent;
+    border: none;
+    padding: 0;
+    overflow: hidden;
 }
 
-.custom-signup-btn img{
-    display: block; 
-    width: 100%; 
-    height: auto; 
-    pointer-events: none; 
+.custom-signup-btn img {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
 }
 
 .image-div {
@@ -184,8 +186,8 @@ img.image-div {
     width: 100%;
 
     position: sticky;
-    top: 200px; /* Distance from the top of the page */
-    z-index: 10; /* Ensure it stays above other content */
+    top: 200px;
+    z-index: 10;
 }
 
 .nav-tabs .nav-item {
@@ -198,19 +200,19 @@ img.image-div {
 
 @media (max-width: 1140px) {
     #tabs {
-        position: static; /* Let the tabs flow normally on small screens */
+        position: static;
         top: auto;
         z-index: auto;
     }
 
     .tab-content {
-        padding-top: 0; /* Remove extra padding on mobile */
+        padding-top: 0;
     }
 }
 
 @media (min-width: 1400px) {
     .table-container {
-        max-width: 1200px; /* Center table with reduced width */
+        max-width: 1200px;
     }
 }
 
@@ -245,17 +247,18 @@ img.image-div {
 }
 
 .table-striped tbody tr:nth-child(odd) {
-    background-color: #650d89; 
+    background-color: #1C2833;
 }
 
 .table-striped tbody tr:nth-child(even) {
-    background-color: #920075; 
+    background-color: #2E4053;
 }
 
 ul {
     padding: 0;
-    margin: 0; /* Optionally reset margin as well */
+    margin: 0;
 }
+
 /* Table Formatting Ends */
 
 /* Pagination Formatting */
@@ -284,6 +287,7 @@ ul {
 .page-item .page-link {
     cursor: pointer;
 }
+
 /* Pagination Formatting Ends */
 
 /* Search Form */
@@ -291,15 +295,9 @@ ul {
     padding: 10px;
     background: transparent;
     text-align: center;
- }
+}
 
-/*  .custom-search-form .input-group {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-} */
-
- .custom-search-form input{
+.custom-search-form input {
     width: 70%;
     padding: 0 30px;
     border-radius: 50px !important;
@@ -310,9 +308,9 @@ ul {
     position: relative;
     color: #333;
     height: 80px;
- }
+}
 
- .custom-search-form button{
+.custom-search-form button {
     height: 60px;
     color: #fff;
     border-radius: 50px !important;
@@ -322,8 +320,55 @@ ul {
     top: 10px;
     position: relative;
 
- }
+}
+
 /* Search Form Ends */
+
+/* Randomiser Result */
+.movie-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    border: 0px solid #ccc;
+    border-radius: 8px;
+    background: #1C2833;
+    max-width: 900px;
+    margin: auto;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.movie-hero:not([hidden]) {
+    opacity: 1;
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hero-details {
+    flex: 1;
+    max-width: 500px;
+}
+
+.hero-details h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.hero-details p {
+    margin: 5px 0;
+    font-size: 1.1rem;
+    color: white;
+}
+
+/* Randomiser Result End */
 
 /* Font Control */
 .permanent-marker-regular {
@@ -334,10 +379,15 @@ ul {
 }
 
 .glowy {
-    text-shadow: 
-    0 0 5px #d40078,    /* Inner glow */
-    0 0 10px #d40078,   /* Slightly larger glow */
-    0 0 20px #f6019d,   /* Outer glow */
-    0 0 40px #023788,   /* Far glow */
-    0 0 80px #650d89;   /* Atmospheric glow */
+    text-shadow:
+        0 0 5px #d40078,
+        /* Inner glow */
+        0 0 10px #d40078,
+        /* Slightly larger glow */
+        0 0 20px #f6019d,
+        /* Outer glow */
+        0 0 40px #023788,
+        /* Far glow */
+        0 0 80px #650d89;
+    /* Atmospheric glow */
 }

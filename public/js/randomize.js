@@ -1,72 +1,74 @@
-document.getElementById('randomize-button').onclick = async function() {
+// Default media type on page load
+let mediaType = 'movie'
+
+// Listen for tab click events and update the media type
+document.querySelectorAll('.nav-link').forEach(tab => {
+    tab.addEventListener('click', (event) => {
+        mediaType = event.target.id.includes('tv') ? 'tv' : 'movie' // Infer type from tab ID
+        console.log('Media type updated:', mediaType)
+
+        // Clear the result display when switching tabs
+        document.getElementById('random-selection').innerHTML = ''
+    })
+})
+
+// Handle the randomizer button click
+document.getElementById('randomize-button').onclick = async function () {
     try {
-        // Get selected genre
-        const genre = document.getElementById('genre-select').value
-        console.log('Selected genre:', genre)
+        const genre = document.getElementById('genre-select').value || ''
+        const endpoint = mediaType === 'tv' ? '/randomize-tv/randomize-tv' : '/randomize/randomize'
+        const query = genre ? `?q=${encodeURIComponent(genre)}` : ''
 
-        // Get the selected option (either "movie" or "tv") from the radio buttons
-        const mediaType = document.querySelector('input[name="media-type"]:checked').value
-        console.log('Media type:', mediaType)
+        const response = await fetch(`${endpoint}${query}`)
+        if (!response.ok) {
+            const error = await response.json();
+            alert(error.error || 'An error occurred.')
+            return
+        }
 
-        // Construct the endpoint based on movie or TV selection
-        let endpoint;
-        if (mediaType === 'tv') {
-            endpoint = '/randomize-tv/randomize-tv'
+        const data = await response.json()
+        if (mediaType === 'movie' && data.movie) {
+            updateHeroSection({
+                poster: data.movie.poster,
+                title: data.movie.title,
+                year: data.movie.year,
+                genre: data.movie.genre,
+                plot: data.movie.plot,
+            })
+        } else if (mediaType === 'tv' && data.tvshow) {
+            updateHeroSection({
+                poster: data.tvshow.poster,
+                title: data.tvshow.title,
+                year: data.tvshow.year,
+                genre: data.tvshow.genre,
+                plot: data.tvshow.plot || 'No description available.',
+            })
         } else {
-            endpoint = '/randomize/randomize'
+            alert('No results found or invalid response.')
         }
-
-        // Construct the query string
-        const genreQuery = genre ? `?q=${encodeURIComponent(genre)}` : ''  // Only add `?q=` if genre is selected
-        console.log('Query string:', genreQuery)
-
-        // Make the request to the backend
-        try {
-            const response = await fetch(`${endpoint}${genreQuery}`)
-            console.log('Raw Response:', response)
-
-            // Check if the response is not OK (e.g., 404 for empty watchlist)
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Error Response:', errorData);
-
-                // Display error message to the user
-                const resultDiv = document.getElementById('random-selection');
-                resultDiv.innerHTML = `<p class="error-message">${errorData.error || 'An error occurred.'}</p>`;
-                return;
-            }
-    
-            // Ensure the response is in JSON format
-            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-                const data = await response.json() // Parse JSON once
-                console.log('Parsed JSON Response:', data)
-                const resultDiv = document.getElementById('random-selection')
-                resultDiv.innerHTML = '' // Clear previous result
-                
-                if (mediaType === 'movie' && data && data.movie && data.movie.title) {
-                    resultDiv.innerHTML = `
-                        <strong>${data.movie.title || 'Untitled'}</strong> (${data.movie.year || 'Unknown Year'})<br>
-                        Genre: ${data.movie.genre || 'Unknown Genre'}<br>
-                        Description: ${data.movie.description || 'No description available.'}
-                    `;
-                } else if (mediaType === 'tv' && data && data.tvshow && data.tvshow.title) {
-                    resultDiv.innerHTML = `
-                        <strong>${data.tvshow.title || 'Untitled'}</strong> (${data.tvshow.year || 'Unknown Year'})<br>
-                        Genre: ${data.tvshow.genre || 'Unknown Genre'}<br>
-                        Seasons: ${data.tvshow.seasons || 'Unknown Seasons'}<br>
-                        Description: ${data.tvshow.description || 'No description available.'}
-                    `;
-                } else {
-                    resultDiv.innerHTML = '<p>No results found or invalid response.</p>'
-                }
-            } else {
-                console.error('Unexpected response format or status:', response)
-            }
-        } catch (error) {
-            console.error('Error in fetch operation:', error)
-        }
-    } catch (err) {
-        console.error('Error in JS Script:', err)
+    } catch (error) {
+        console.error('Error fetching random selection:', error)
         alert('An unexpected error occurred.')
-    } 
+    }
 }
+
+function updateHeroSection(data) {
+    const heroSection = document.querySelector('.movie-hero')
+
+    // Update the poster image
+    document.getElementById('poster-image').src = data.poster || '/images/which_one_first.png'
+    document.getElementById('poster-image').alt = `${data.title || 'Untitled'} Poster`
+
+    // Update movie details
+    document.getElementById('movie-title').textContent = data.title || 'Untitled'
+    document.getElementById('movie-year').innerHTML = `<strong>Year:</strong> ${data.year || 'Unknown'}`
+    document.getElementById('movie-genre').innerHTML = `<strong>Genre:</strong> ${data.genre || 'Unknown'}`
+    document.getElementById('movie-description').innerHTML = `
+        <strong>Plot:</strong> ${data.plot || 'No description available.'}
+    `
+
+    // Show the hero section
+    heroSection.hidden = false
+}
+
+

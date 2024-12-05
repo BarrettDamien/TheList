@@ -4,9 +4,9 @@ module.exports = (sequelize) => {
     class User extends Model {
         static associate(models) {
             // A user can have many movie watchlist items
-            User.hasMany(models.MovieWatchlist, { foreignKey: 'userId', onDelete: 'CASCADE' });
+            User.hasMany(models.MovieWatchlist, { foreignKey: 'userId', onDelete: 'CASCADE' })
             // A user can have many TV watchlist items
-            User.hasMany(models.TVWatchlist, { foreignKey: 'userId', onDelete: 'CASCADE' });
+            User.hasMany(models.TVWatchlist, { foreignKey: 'userId', onDelete: 'CASCADE' })
         }
     }
 
@@ -31,5 +31,5 @@ module.exports = (sequelize) => {
         timestamps: true,
     })
 
-    return User;
+    return User
 }

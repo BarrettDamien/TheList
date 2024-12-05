@@ -4,8 +4,8 @@ module.exports = (sequelize) => {
     class MovieWatchlist extends Model {
         static associate(models) {
             // Define the relationship here
-            MovieWatchlist.belongsTo(models.Movie, { foreignKey: 'movieId' });
-            MovieWatchlist.belongsTo(models.User, { foreignKey: 'userId' });
+            MovieWatchlist.belongsTo(models.Movie, { foreignKey: 'movieId' })
+            MovieWatchlist.belongsTo(models.User, { foreignKey: 'userId' })
         }
     }
 
@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'user', // Reference to User model
+                model: 'user',
                 key: 'id',
             },
             onDelete: 'CASCADE',
@@ -24,7 +24,7 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'movie', // Reference to Movie model
+                model: 'movie',
                 key: 'id',
             },
             onDelete: 'CASCADE',
@@ -37,5 +37,5 @@ module.exports = (sequelize) => {
         timestamps: true,
     })
 
-    return MovieWatchlist;
+    return MovieWatchlist
 };

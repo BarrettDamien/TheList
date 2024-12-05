@@ -4,8 +4,8 @@ module.exports = (sequelize) => {
     class TVWatchlist extends Model {
         static associate(models) {
             // Define the relationship here
-            TVWatchlist.belongsTo(models.TVShow, { foreignKey: 'tvShowId' });
-            TVWatchlist.belongsTo(models.User, { foreignKey: 'userId' });
+            TVWatchlist.belongsTo(models.TVShow, { foreignKey: 'tvShowId' })
+            TVWatchlist.belongsTo(models.User, { foreignKey: 'userId' })
         }
     }
 
@@ -37,5 +37,5 @@ module.exports = (sequelize) => {
         timestamps: true,
     })
 
-    return TVWatchlist;
+    return TVWatchlist
 };

@@ -4,7 +4,7 @@ module.exports = (sequelize) => {
     class TVShow extends Model {
         static associate(models) {
             // Define the relationship here
-            TVShow.hasMany(models.TVWatchlist, { foreignKey: 'tvShowId' });
+            TVShow.hasMany(models.TVWatchlist, { foreignKey: 'tvShowId' })
         }
     }
 
@@ -17,7 +17,7 @@ module.exports = (sequelize) => {
         imdbID: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
+            unique: true, // Ensures that each TV Show is only added once
         },
         title: {
             type: DataTypes.STRING,
@@ -38,6 +38,9 @@ module.exports = (sequelize) => {
         poster: {
             type: DataTypes.STRING,
         },
+        plot: {
+            type: DataTypes.STRING,
+        },
         // Add more fields if needed
     }, {
         sequelize, 
@@ -46,5 +49,5 @@ module.exports = (sequelize) => {
         timestamps: true,
     })
 
-    return TVShow;
+    return TVShow
 };
