@@ -45,11 +45,11 @@
     </nav>
   </header>
   <main class="flex-shrink-0" role="main">
-    <% if (failed) {%>
-      <h4>
-        Error: <%= msg%>
-      </h4>
-      <% } %>
+    <% if (failed) { %>
+      <script type="text/javascript">
+        alert("<%= msg %>"); // This should show an alert with the message
+      </script>
+    <% } %>
         <section class="login-section">
           <div class="container">
             <div class="row">

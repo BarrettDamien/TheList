@@ -55,17 +55,24 @@ router.post('/login', [
     body('username').trim().escape().isAlphanumeric().withMessage('Invalid username.'),
     body('password').trim().isLength({ min: 6 }).withMessage('Password must be at least 6 characters.'),
 ], (req, res, next) => {
-    const errors = validationResult(req)
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
+        // If validation fails, send errors as JSON
+        return res.status(400).json({ errors: errors.array() });
     }
-    next()
+    next();
 },
-    passport.authenticate('local', {
-        successRedirect: '/', // Redirect to homepage on successful login
-        failureRedirect: '/auth/login?failed=1', // Render login page with failure message if applicable
-    })
-)
+passport.authenticate('local', {
+    successRedirect: '/', // Redirect to homepage on successful login
+    failureRedirect: '/auth/login', // Render login page on failure
+}), (req, res) => {
+    // If authentication fails, render login page with error message
+    res.render('login', {
+        failed: true, 
+        msg: 'Invalid username or password' // Customize this message based on your needs
+    });
+    console.log('Failed:', true, 'Message:', 'Invalid username or password');
+});
 
 // GET route to render login page
 router.get('/login', (req, res, next) => {
