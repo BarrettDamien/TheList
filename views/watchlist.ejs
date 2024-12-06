@@ -36,7 +36,7 @@
                             <a class="nav-link active" href="/watchlist">Add to List</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/watchlist/viewer">My List</a>
+                            <a class="nav-link" href="/watchlist/viewer">Backlog</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/randomize">Randomizer</a>
@@ -86,14 +86,14 @@
                         <!-- Pills navs -->
 
                         <!-- Pills content -->
-                        <div class="col-12 col-xl-10"> 
+                        <div class="col-12 col-xl-12 d-flex justify-content-center">
                             <div class="table-container">
                                 <div class="tab-content pt-3  " id="tab-content">
                                     <div class="tab-pane active row g-1 mt-1 " id="movie-tabpanel" role="tabpanel"
                                         aria-labelledby="movie-tab">
-                                        <form action="#" class="custom-search-form text-center">
+                                        <form action="#" class="custom-search-form">
                                             <div class="input-group">
-                                                <input type="text" id="movie-search-input"
+                                                <input type="text" id="movie-search-input" class="form-control"
                                                     placeholder="Enter movie title">
                                                 <button id="movie-search-button"
                                                     class="btn btn-primary permanent-marker-regular">Search</button>
@@ -121,7 +121,7 @@
                                         aria-labelledby="tv-tab">
                                         <form action="#" class="custom-search-form text-center">
                                             <div class="input-group">
-                                                <input type="text" id="tv-search-input"
+                                                <input type="text" id="tv-search-input" class="form-control"
                                                     placeholder="Enter TV show title">
                                                 <button id="tv-search-button"
                                                     class="btn btn-primary permanent-marker-regular">Search</button>
@@ -148,6 +148,17 @@
                             </div>
                         </div>
                         <!-- Pills content -->
+        </div>
+        <!-- Toast Container -->
+        <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3 permanent-marker-regular" style="z-index: 1055; margin-bottom: 50px;">
+            <div id="toast-notification" class="toast align-items-center text-white bg-success border-0" role="alert"
+                aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div id="toast-message" class="toast-body text-center"></div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
+            </div>
         </div>
     </main>
     <footer class="footer fixed-bottom mt-auto py-3">

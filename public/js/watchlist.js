@@ -1,3 +1,18 @@
+// Show toast function
+function showToast(message, toastClass) {
+    const toastElement = document.getElementById('toast-notification');
+    const toastBody = document.getElementById('toast-message');
+    toastBody.textContent = message;
+    toastElement.className = `toast align-items-center text-white ${toastClass} border-0`;
+
+    const toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: 3000
+    });
+
+    toast.show();
+}
+
 // *** MOVIES ***
 // Frontend for searching Movies
 const movieResultsDiv = document.getElementById("movie-search-results")
@@ -152,7 +167,11 @@ async function addToWatchlist(imdbID) {
         body: JSON.stringify({ imdbID }),
     });
 
-    alert(response.ok ? "Movie added to watchlist!" : `Error: ${await response.text()}`)
+    if (response.ok) {
+        showToast("Movie added to watchlist!", "bg-success");
+    } else {
+        showToast(`Error: ${await response.text()}`, "bg-danger");
+    }
 }
 
 // *** TV SHOWS ***
@@ -216,5 +235,9 @@ async function addToTvWatchlist(imdbID) {
         body: JSON.stringify({ imdbID }),
     });
 
-    alert(response.ok ? "TV show added to watchlist!" : `Error: ${await response.text()}`)
+    if (response.ok) {
+        showToast("TV show added to watchlist!", "bg-success");
+    } else {
+        showToast(`Error: ${await response.text()}`, "bg-danger");
+    }
 }

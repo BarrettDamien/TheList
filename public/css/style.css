@@ -223,6 +223,7 @@ img.image-div {
     width: 100% !important;
     display: block !important;
     padding: 0;
+    margin: 0 auto;
 }
 
 .table {
@@ -292,9 +293,12 @@ ul {
 
 /* Search Form */
 .custom-search-form {
-    padding: 10px;
+    padding: 20px;
     background: transparent;
-    text-align: center;
+    padding-left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .custom-search-form input {
@@ -311,18 +315,64 @@ ul {
 }
 
 .custom-search-form button {
-    height: 60px;
+    height: 80px;
     color: #fff;
     border-radius: 50px !important;
     border: none;
     width: 100px;
-    right: 115px;
-    top: 10px;
+    right: -10px;
+    top: 0px;
     position: relative;
 
 }
 
 /* Search Form Ends */
+
+@keyframes wobble {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-5deg);
+    }
+    75% {
+        transform: rotate(5deg);
+    }
+}
+
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 105, 180, 0.8); /* Bright pink glow */
+    }
+    100% {
+        box-shadow: 0 0 0px rgba(0, 0, 0, 0.5);
+    }
+}
+
+@keyframes heartbeat {
+    0%,100% {
+        transform: scale(1);
+    }
+    15% {
+        transform: scale(1.05);
+    }
+    25% {
+        transform: scale(0.95);
+    }
+    35% {
+        transform: scale(1.05);
+    }
+    50% {
+        transform: scale(1);
+    }
+}
+
+.randomize-button {
+    animation: heartbeat 2s infinite;
+}
 
 /* Randomiser Result */
 .movie-hero {
