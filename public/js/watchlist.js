@@ -104,7 +104,7 @@ function renderMovies(movies) {
                                     ${movie.Title} (${movie.Year})
                                 </button>
                             </h2>
-                            <button class="btn btn-success btn-sm col-2 ml-2" onclick="addToWatchlist('${movie.imdbID}')">Add to Watchlist</button>
+                            <button class="btn btn-success btn-sm col-2 ml-2" onclick="addToWatchlist('${movie.imdbID}')">Add to Queue</button>
                         </div>
                         <div id="collapse${index}" class="accordion-collapse collapse" aria-labelledby="heading${index}" data-bs-parent="#movieAccordion">
                             <div class="accordion-body">
@@ -122,7 +122,7 @@ function renderMovies(movies) {
 function renderPagination(totalResults, currentPage, callback) {
     const resultsPerPage = 10; // OMDB API limit
     const totalPages = Math.ceil(totalResults / resultsPerPage);
-    const visiblePageCount = 10; // Number of page buttons to display
+    const visiblePageCount = 5; // Number of page buttons to display
 
     const startPage = Math.floor((currentPage - 1) / visiblePageCount) * visiblePageCount + 1;
     const endPage = Math.min(startPage + visiblePageCount - 1, totalPages);
@@ -214,7 +214,7 @@ function renderTvShows(tvShows) {
                                     ${tvShow.Title} (${tvShow.Year})
                                 </button>
                             </h2>
-                            <button class="btn btn-success btn-sm col-2 ml-2" onclick="addToTvWatchlist('${tvShow.imdbID}')">Add to Watchlist</button>
+                            <button class="btn btn-success btn-sm col-2 ml-2" onclick="addToTvWatchlist('${tvShow.imdbID}')">Add to Queue</button>
                         </div>
                         <div id="collapseTv${index}" class="accordion-collapse collapse" aria-labelledby="headingTv${index}" data-bs-parent="#tvAccordion">
                             <div class="accordion-body">
