@@ -33,7 +33,7 @@
                             <a class="nav-link" aria-current="page" href="/">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/watchlist">Add Picks</a>
+                            <a class="nav-link active" href="/watchlist">Add Picks</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/watchlist/viewer">My Queue</a>
@@ -83,9 +83,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <!-- Pills navs -->
+                        <!-- Pills navs end -->
 
-                        <!-- Pills content -->
+                        <!-- Pills content :: Accordion -->
                         <div class="col-12 col-xl-12 d-flex justify-content-center">
                             <div class="table-container">
                                 <div class="tab-content pt-3  " id="tab-content">
@@ -101,15 +101,9 @@
                                         </form>
 
                                         <div id="" class="mt-4">
-                                            <table class="table table-striped permanent-marker-regular">
-                                                <thead>
-                                                    <tr>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="movie-search-results">
-                                                    <!-- Results will be dynamically populated here -->
-                                                </tbody>
-                                            </table>
+                                            <div class="accordion mt-4 permanent-marker-regular" id="movieAccordion">
+                                                <!-- Accordion items will be dynamically populated here -->
+                                            </div>
                                             <nav aria-label="Movie results pagination">
                                                 <ul class="pagination justify-content-center mt-3 permanent-marker-regular"
                                                     id="movie-pagination"></ul>
@@ -129,15 +123,9 @@
                                         </form>
 
                                         <div id="" class="mt-4">
-                                            <table class="table table-striped permanent-marker-regular">
-                                                <thead>
-                                                    <tr>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="tv-search-results">
-                                                    <!-- Results will be dynamically populated here -->
-                                                </tbody>
-                                            </table>
+                                            <div class="accordion mt-4 permanent-marker-regular" id="tvAccordion">
+                                                <!-- Accordion items will be dynamically populated here -->
+                                            </div>
                                             <nav aria-label="TV show results pagination">
                                                 <ul class="pagination justify-content-center mt-3 permanent-marker-regular"
                                                     id="tv-pagination"></ul>
@@ -147,10 +135,11 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Pills content -->
+                        <!-- Pills content end -->
         </div>
         <!-- Toast Container -->
-        <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3 permanent-marker-regular" style="z-index: 1055; margin-bottom: 50px;">
+        <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3 permanent-marker-regular"
+            style="z-index: 1055; margin-bottom: 50px;">
             <div id="toast-notification" class="toast align-items-center text-white bg-success border-0" role="alert"
                 aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">

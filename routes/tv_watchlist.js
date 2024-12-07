@@ -31,13 +31,18 @@ router.get('/search', async (req, res) => {
         const response = await axios.get(`http://www.omdbapi.com/?s=${encodeURIComponent(searchQuery)}&type=series&apikey=${OMDB_KEY}&page=${page}`)
 
         if (response.data.Response === 'True') {
-            const tvShows = response.data.Search.map(tv => ({
-                Title: tv.Title || tv.title,
-                Year: tv.Year || tv.year,
-                imdbID: tv.imdbID,
-                Poster: tv.Poster || tv.poster,
-                Plot: tv.plot || tv.Plot,
-            }))
+            const tvShows = await Promise.all(response.data.Search.map(async (tv) => {
+                const tvDetailsResponse = await axios.get(`http://www.omdbapi.com/?i=${tv.imdbID}&apikey=${OMDB_KEY}`);
+                const tvDetails = tvDetailsResponse.data;
+                return {
+                    Title: tvDetails.Title,
+                    Year: tvDetails.Year,
+                    imdbID: tv.imdbID,
+                    Poster: tvDetails.Poster,
+                    Plot: tvDetails.Plot,
+                    Genre: tvDetails.Genre,
+                };
+            }));
             res.json({
                 results: tvShows,
                 totalResults: parseInt(response.data.totalResults, 10) || 0,

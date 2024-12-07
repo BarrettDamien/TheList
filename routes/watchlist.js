@@ -33,12 +33,16 @@ router.get('/search', async (req, res) => {
         )
 
         if (response.data.Response === 'True') {
-            const movies = response.data.Search.map((movie) => ({
-                Title: movie.Title || movie.title,
-                Year: movie.Year || movie.year,
-                imdbID: movie.imdbID,
-                Poster: movie.Poster || movie.poster,
-                Plot: movie.Plot || movie.plot,
+            const movies = await Promise.all(response.data.Search.map(async (movie) => {
+                const movieDetails = await axios.get(`http://www.omdbapi.com/?i=${movie.imdbID}&apikey=${OMDB_KEY}`);
+                return {
+                    Title: movieDetails.data.Title,
+                    Year: movieDetails.data.Year,
+                    imdbID: movie.imdbID,
+                    Poster: movieDetails.data.Poster,
+                    Plot: movieDetails.data.Plot,
+                    Genre: movieDetails.data.Genre,
+                };
             }))
 
             res.json({
@@ -129,14 +133,14 @@ router.get('/viewer', async (req, res) => {
         // Fetch the user's movie and TV show watchlists
         const movies = await MovieWatchlist.findAll({
             where: { userId: user.id },
-            include: [{ model: Movie, attributes: ['id', 'title', 'year', 'imdbID', 'poster'] }],
+            include: [{ model: Movie, attributes: ['id', 'title', 'year', 'imdbID', 'poster', 'genre', 'plot'] }],
             raw: true,
         })
         console.log(movies)
 
         const tvShows = await TVWatchlist.findAll({
             where: { userId: user.id },
-            include: [{ model: TVShow, attributes: ['id', 'title', 'year', 'imdbID', 'poster'] }],
+            include: [{ model: TVShow, attributes: ['id', 'title', 'year', 'imdbID', 'poster', 'genre', 'plot'] }],
             raw: true,
         })
         console.log(tvShows)
@@ -146,14 +150,18 @@ router.get('/viewer', async (req, res) => {
             title: item['movie.title'],  // Accessing flattened field
             year: item['movie.year'],
             poster: item['movie.poster'],
-            id: item['movie.id']
+            id: item['movie.id'],
+            genre: item['movie.genre'],
+            plot: item['movie.plot']
         }))
 
         const tvShowData = tvShows.map(item => ({
             title: item['tvshow.title'],  // Accessing flattened field
             year: item['tvshow.year'],
             poster: item['tvshow.poster'],
-            id: item['tvshow.id']
+            id: item['tvshow.id'],
+            genre: item['tvshow.genre'],
+            plot: item['tvshow.plot']
         }))
 
         console.log("Mapped movieData: ", movieData)

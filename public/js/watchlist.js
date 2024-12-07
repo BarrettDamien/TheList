@@ -39,8 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
         tab.addEventListener("shown.bs.tab", (event) => {
             console.log("Tab switched:", event.target.id)
             if (event.target.id === "movie-tab") {
+                currentMoviePage = 1;
                 initializeMovieSearch()
             } else if (event.target.id === "tv-tab") {
+                currentTvPage = 1;
                 initializeTvSearch()
             }
         })
@@ -88,75 +90,73 @@ async function fetchMovies(page = 1) {
     }
 }
 
+/* Accordion Version of Render */
 function renderMovies(movies) {
-    movieResultsDiv.innerHTML = `
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Year</th>
-                    <th>Add?</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${movies.length
-            ? movies
-                .map((movie) => `
-                                <tr>
-                                    <td>${movie.Title}</td>
-                                    <td>${movie.Year}</td>
-                                    <td><button class="btn btn-success btn-sm" onclick="addToWatchlist('${movie.imdbID}')">Add</button></td>
-                                </tr>
-                            `)
+    const movieAccordionDiv = document.getElementById("movieAccordion");
+    movieAccordionDiv.innerHTML = movies.length
+        ? movies
+                .map(
+                    (movie, index) => `
+                    <div class="accordion-item">
+                        <div class="accordion-header d-flex justify-content-between align-items-center">
+                            <h2 class="accordion-header col-10" id="heading${index}">
+                                <button class="accordion-button  collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}">
+                                    ${movie.Title} (${movie.Year})
+                                </button>
+                            </h2>
+                            <button class="btn btn-success btn-sm col-2 ml-2" onclick="addToWatchlist('${movie.imdbID}')">Add to Watchlist</button>
+                        </div>
+                        <div id="collapse${index}" class="accordion-collapse collapse" aria-labelledby="heading${index}" data-bs-parent="#movieAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Genre:</strong> ${movie.Genre || "No genre available."}</p> 
+                                <p><strong>Plot:</strong> ${movie.Plot || "No plot summary available."}</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+                )
                 .join("")
-            : "<tr><td colspan='4'>No results found.</td></tr>"
-        }
-            </tbody>
-        </table>
-    `;
+        : "<p>No results found.</p>";
 }
 
 function renderPagination(totalResults, currentPage, callback) {
-    const resultsPerPage = 10 // OMDB limits to 10 results per query page output
-    const totalPages = Math.ceil(totalResults / resultsPerPage)
-    const visiblePageCount = 10  // Show 10 pages at a time
+    const resultsPerPage = 10; // OMDB API limit
+    const totalPages = Math.ceil(totalResults / resultsPerPage);
+    const visiblePageCount = 10; // Number of page buttons to display
 
-    // Calculate the start and end page numbers for the current visible range
-    let startPage = Math.floor((currentPage - 1) / visiblePageCount) * visiblePageCount + 1
-    let endPage = Math.min(startPage + visiblePageCount - 1, totalPages)
+    const startPage = Math.floor((currentPage - 1) / visiblePageCount) * visiblePageCount + 1;
+    const endPage = Math.min(startPage + visiblePageCount - 1, totalPages);
 
-    // Create "Previous" and "Next" buttons to navigate between page groups
-    let paginationHTML = `<ul class="pagination justify-content-center">`
+    let paginationHTML = `<ul class="pagination justify-content-center">`;
 
-    // "Previous" button to go back to the previous group of pages
+    // "Previous" button
     if (startPage > 1) {
         paginationHTML += `
             <li class="page-item">
                 <button class="page-link" onclick="${callback.name}(${startPage - visiblePageCount})">&laquo;</button>
-            </li>
-        `
+            </li>`;
     }
 
-    // Loop through the range of pages to be shown and create buttons
+    // Page number buttons
     for (let page = startPage; page <= endPage; page++) {
         paginationHTML += `
             <li class="page-item ${currentPage === page ? "active" : ""}">
                 <button class="page-link" onclick="${callback.name}(${page})">${page}</button>
-            </li>
-        `
+            </li>`;
     }
 
-    // "Next" button to go to the next group of pages
+    // "Next" button
     if (endPage < totalPages) {
         paginationHTML += `
             <li class="page-item">
                 <button class="page-link" onclick="${callback.name}(${endPage + 1})">&raquo;</button>
-            </li>
-        `
+            </li>`;
     }
 
-    paginationHTML += `</ul>`
-    moviePaginationDiv.innerHTML = paginationHTML
+    paginationHTML += `</ul>`;
+
+    const paginationDiv = callback === fetchMovies ? moviePaginationDiv : tvPaginationDiv;
+    paginationDiv.innerHTML = paginationHTML;
 }
 
 
@@ -200,32 +200,33 @@ async function fetchTvShows(page = 1) {
     }
 }
 
+/* Accordion Version of Render */
 function renderTvShows(tvShows) {
-    tvResultsDiv.innerHTML = `
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Year</th>
-                    <th>Add?</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tvShows.length
-            ? tvShows
-                .map((tvShow) => `
-                                <tr>
-                                    <td>${tvShow.Title}</td>
-                                    <td>${tvShow.Year}</td>
-                                    <td><button class="btn btn-success btn-sm" onclick="addToTvWatchlist('${tvShow.imdbID}')">Add</button></td>
-                                </tr>
-                            `)
-                .join("")
-            : "<tr><td colspan='4'>No results found.</td></tr>"
-        }
-            </tbody>
-        </table>
-    `
+    const tvAccordionDiv = document.getElementById("tvAccordion");
+    tvAccordionDiv.innerHTML = tvShows.length
+        ? tvShows
+            .map(
+                (tvShow, index) => `
+                    <div class="accordion-item">
+                        <div class="accordion-header d-flex justify-content-between align-items-center">
+                            <h2 class="accordion-header col-10" id="headingTv${index}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTv${index}" aria-expanded="false" aria-controls="collapseTv${index}">
+                                    ${tvShow.Title} (${tvShow.Year})
+                                </button>
+                            </h2>
+                            <button class="btn btn-success btn-sm col-2 ml-2" onclick="addToTvWatchlist('${tvShow.imdbID}')">Add to Watchlist</button>
+                        </div>
+                        <div id="collapseTv${index}" class="accordion-collapse collapse" aria-labelledby="headingTv${index}" data-bs-parent="#tvAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Genre:</strong> ${tvShow.Genre || "No genre available."}</p>
+                                <p><strong>Plot:</strong> ${tvShow.Plot || "No plot summary available."}</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            )
+            .join("")
+        : "<p>No results found.</p>";
 }
 
 async function addToTvWatchlist(imdbID) {
