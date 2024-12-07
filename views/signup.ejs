@@ -31,10 +31,10 @@
               <a class="nav-link" aria-current="page" href="/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/watchlist">Add to List</a>
+              <a class="nav-link" href="/watchlist">Add Picks</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/watchlist/viewer">Backlog</a>
+              <a class="nav-link" href="/watchlist/viewer">My Queue</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/randomize">Randomizer</a>
@@ -50,7 +50,7 @@
         alert("<%= msg %>"); // This should show an alert with the message
       </script>
     <% } %>
-        <section class="login-section">
+        <section class="login-section permanent-marker-regular">
           <div class="container">
             <div class="row">
               <div class="col-md-6 text-black">
@@ -69,6 +69,11 @@
                       <input id="current-password" name="password" type="password" autocomplete="current-password"
                         required class="form-control form-control-lg" />
                       <label class="form-label permanent-marker-regular" for="current-password">Password</label>
+                      <!-- Checkbox to toggle visibility -->
+                      <div class="toggle-password">
+                        <input type="checkbox" id="show-password" onclick="togglePassword('current-password')">
+                        <label for="show-password">Show Password</label>
+                      </div>
                     </div>
 
                     <div class="pt-1 mb-4">

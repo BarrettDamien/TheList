@@ -13,3 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set the random image from const list above as the source for the img element
     document.getElementById('random-image').src = images[randomIndex]
 })
+
+function togglePassword(passwordFieldId) {
+    const passwordField = document.getElementById(passwordFieldId);
+    if (passwordField.type === "password") {
+        passwordField.type = "text"; // Show password
+    } else {
+        passwordField.type = "password"; // Hide password
+    }
+}

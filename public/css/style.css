@@ -155,6 +155,20 @@ img.image-div {
     overflow: hidden !important;
 }
 
+.toggle-password {
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.toggle-password label {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.toggle-password input {
+    cursor: pointer;
+}
+
 #tabs {
     position: fixed;
     top: 60px;
